@@ -85,7 +85,7 @@ app.post('/api/interactions', async (req, res) => {
  
     const currentState = platformState[0]; 
     const newTotalInteractions = (currentState.total_interactions || 0) + 1; 
-    const newGrowthLevel = Math.min(100, Math.floor((newTotalInteractions / 1000) * 100)); 
+const newGrowthLevel = Math.min(100, Math.floor((newTotalInteractions / 50) * 100)); // Changed from 1000 to 50 for faster growth 
  
     console.log('Updating growth:', { 
       current: currentState.growth_level, 
