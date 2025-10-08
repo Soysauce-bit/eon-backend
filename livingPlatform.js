@@ -67,14 +67,6 @@ class LivingPlatform {
             this.createInteractionParticle(x, y, type);
         }
         
-        // Update growth level
-        const newGrowthLevel = Math.min(100, Math.floor((this.interactionCount / this.maxInteractions) * 100));
-        if (newGrowthLevel > this.growthLevel) {
-            this.growthLevel = newGrowthLevel;
-            this.updateGrowthDisplay();
-            this.triggerGrowthEvent();
-        }
-        
         // Send to backend (uncomment when backend is ready)
         try {
             const response = await fetch('https://eon-tqp0.onrender.com/api/interactions', {
