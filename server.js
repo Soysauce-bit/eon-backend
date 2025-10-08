@@ -43,63 +43,65 @@ async function initializePlatform() {
 // API Endpoints
 
 // POST /api/interactions
-app.post('/api/interactions', async (req, res) => {
-  try {
-    const { type, coordinates, sessionId, timestamp } = req.body;
-     
-    // Record interaction
-    const { data: interaction, error } = await supabase
-      .from('user_interactions')
-      .insert([
-        {
-          interaction_type: type,
-          x_coordinate: coordinates.x,
-          y_coordinate: coordinates.y,
-          session_id: sessionId,
-          created_at: timestamp || new Date().toISOString()
-        }
-      ])
-      .select()
-      .single();
-
-    if (error) throw error;
-
-    // Update platform growth level
-    const { data: platformState } = await supabase
-      .from('platform_state')
-      .select('total_interactions, growth_level')
-      .single();
-
-    const newTotalInteractions = (platformState.total_interactions || 0) + 1;
-    const newGrowthLevel = Math.min(100, Math.floor((newTotalInteractions / 1000) * 100));
-
-    // Update platform state
-    const { data: updatedState, error: updateError } = await supabase
-      .from('platform_state')
-      .update({
-        total_interactions: newTotalInteractions,
-        growth_level: newGrowthLevel,
-        last_updated: new Date().toISOString()
-      })
-      .select()
-      .single();
-
-    if (updateError) throw updateError;
-
-    res.json({
-      success: true,
-      interactionId: interaction.id,
-      growthLevel: newGrowthLevel,
-      totalInteractions: newTotalInteractions
-    });
-
-  } catch (error) {
-    console.error('Error recording interaction:', error);
+app.post('/api/interactions', async (req, res) => { 
+  try { 
+    const { type, coordinates, sessionId, timestamp } = req.body; 
+    
+    // Record interaction 
+    const { data: interaction, error } = await supabase 
+      .from('user_interactions') 
+      .insert([ 
+        { 
+          interaction_type: type, 
+          x_coordinate: coordinates.x, 
+          y_coordinate: coordinates.y, 
+          session_id: sessionId, 
+          created_at: timestamp || new Date().toISOString() 
+        } 
+      ]) 
+      .select() 
+      .single(); 
+ 
+    if (error) throw error; 
+ 
+    // Update platform growth level 
+    const { data: platformState } = await supabase 
+      .from('platform_state') 
+      .select('total_interactions, growth_level') 
+      .eq('id', 1)  // ← ADD THIS 
+      .single(); 
+ 
+    const newTotalInteractions = (platformState.total_interactions || 0) + 1; 
+    const newGrowthLevel = Math.min(100, Math.floor((newTotalInteractions / 1000) * 100)); 
+ 
+    // Update platform state - FIXED WITH WHERE CLAUSE 
+    const { data: updatedState, error: updateError } = await supabase 
+      .from('platform_state') 
+      .update({ 
+        total_interactions: newTotalInteractions, 
+        growth_level: newGrowthLevel, 
+        last_updated: new Date().toISOString() 
+      }) 
+      .eq('id', 1)  // ← THIS FIXES THE ERROR 
+      .select() 
+      .single(); 
+ 
+    if (updateError) throw updateError; 
+ 
+    res.json({ 
+      success: true, 
+      interactionId: interaction.id, 
+      growthLevel: newGrowthLevel, 
+      totalInteractions: newTotalInteractions 
+    }); 
+ 
+  } catch (error) { 
+    console.error('Error recording interaction:', error); 
     res.status(500).json({ 
       success: false, 
       error: 'Failed to record interaction' 
-    });
-  }
+    }); 
+  } 
 });
 
 // GET /api/platform/state
