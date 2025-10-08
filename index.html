@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alex.dev - A Living Portfolio</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <canvas id="living-canvas"></canvas>
+
+    <!-- Custom Cursor -->
+    <div class="custom-cursor" id="custom-cursor">
+        <div class="cursor-dot"></div>
+        <div class="cursor-ring"></div>
+    </div>
+
+    <!-- Growth Meter -->
+    <div class="growth-meter">
+        <span>Growth: <span id="growth-percentage">0%</span></span>
+        <div class="meter-bar">
+            <div class="meter-fill" id="meter-fill"></div>
+        </div>
+    </div>
+    
+    <!-- Evolution indicator showing this is a living platform -->
+    <div class="evolution-indicator">
+        <div class="evolution-dot"></div>
+        <span>v1.0.3 – Growing</span>
+    </div>
+    
+    <nav>
+        <div class="nav-content">
+            <div class="logo">alex.dev</div>
+            <div class="nav-links">
+                <a href="#about">About</a>
+                <a href="#skills">Skills</a>
+                <a href="#work">Work</a>
+                <a href="#contact">Contact</a>
+                <a href="#development">Development</a>
+            </div>
+        </div>
+    </nav>
+
+    <section id="hero" class="hero">
+        <div class="hero-content">
+            <h1>Building Digital<br><span>Worlds</span></h1>
+            <p>Your interactions shape this platform. Every click, hover, and scroll contributes to its evolution. This isn't just a portfolio—it's a living ecosystem that grows with you.</p>
+            <div class="btn-group">
+                <a href="#work" class="btn">
+                    <span>Explore Living Projects</span>
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+                <a href="#development" class="btn">
+                    <span>Backend Specs</span>
+                    <i class="fas fa-code"></i>
+                </a>
+            </div>
+            <div class="scroll-down">
+                <a href="#about"><i class="fas fa-chevron-down fa-lg"></i></a>
+            </div>
+        </div>
+    </section>
+
+    <section id="about" class="about">
+        <div class="about-content">
+            <h2 class="section-title">The Living Journey</h2>
+            <p>I don't just build websites—I create evolving digital ecosystems. This platform represents my philosophy: technology should be alive, responsive, and constantly growing through interaction.</p>
+            <p>Every interaction you have here contributes to its evolution. The projects you see are living experiments, not static case studies. They learn, adapt, and grow based on real-world usage and feedback.</p>
+            <p>This is version 1.0.3 of a platform that will transform over time. New features will emerge, interfaces will adapt, and the experience will become more intuitive as collective interactions shape its development.</p>
+            
+            <!-- Recent changes feed -->
+            <div class="recent-changes">
+                <div class="changes-title">
+                    <i class="fas fa-history"></i>
+                    <span>Recent Evolution</span>
+                </div>
+                <div class="changes-list" id="changes-list">
+                    <div class="change-item">
+                        <div class="change-dot"></div>
+                        <span>Platform initialized – v1.0.0</span>
+                    </div>
+                    <div class="change-item">
+                        <div class="change-dot"></div>
+                        <span>Interactive canvas system activated</span>
+                    </div>
+                    <div class="change-item">
+                        <div class="change-dot"></div>
+                        <span>Growth tracking mechanism implemented</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="skills" class="skills section-bg">
+        <div class="skills-content">
+            <h2 class="section-title">Evolving Craft</h2>
+            <div class="skills-grid">
+                <div class="skill-card">
+                    <h3>Interactive Systems</h3>
+                </div>
+                <div class="skill-card">
+                    <h3>Generative Design</h3>
+                </div>
+                <div class="skill-card">
+                    <h3>Real-time Experiences</h3>
+                </div>
+                <div class="skill-card">
+                    <h3>Adaptive Interfaces</h3>
+                </div>
+                <div class="skill-card">
+                    <h3>Data Storytelling</h3>
+                </div>
+                <div class="skill-card">
+                    <h3>Immersive Environments</h3>
+                </div>
+                <div class="skill-card">
+                    <h3>Collaborative Platforms</h3>
+                </div>
+                <div class="skill-card">
+                    <h3>Future-Proof Architecture</h3>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="work" class="work">
+        <div class="work-content">
+            <h2 class="section-title">Living Experiments</h2>
+            <div class="work-grid">
+                <div class="work-card">
+                    <h3>Cosmic Data Symphony v1.2</h3>
+                    <p>An interactive visualization that transforms real-time astronomical data into an evolving audiovisual experience. This project learns from user interactions and adapts its visual language over time.</p>
+                    <div class="tech-tags">
+                        <span class="tech-tag">WebGL</span>
+                        <span class="tech-tag">Web Audio API</span>
+                        <span class="tech-tag">Machine Learning</span>
+                        <span class="tech-tag">Real-time Data</span>
+                    </div>
+                </div>
+                <div class="work-card">
+                    <h3>Neural Canvas v0.8</h3>
+                    <p>A collaborative art platform powered by machine learning that interprets user gestures and transforms them into evolving digital paintings. Currently in active development with weekly updates.</p>
+                    <div class="tech-tags">
+                        <span class="tech-tag">TensorFlow.js</span>
+                        <span class="tech-tag">p5.js</span>
+                        <span class="tech-tag">WebSockets</span>
+                        <span class="tech-tag">Creative AI</span>
+                    </div>
+                </div>
+                <div class="work-card">
+                    <h3>Quantum Narrative Engine v2.1</h3>
+                    <p>An experimental storytelling platform where narrative branches respond to user biometric data and environmental context. Recently updated with weather integration and improved personalization.</p>
+                    <div class="tech-tags">
+                        <span class="tech-tag">React Three Fiber</span>
+                        <span class="tech-tag">Biometric APIs</span>
+                        <span class="tech-tag">Adaptive Storytelling</span>
+                        <span class="tech-tag">Immersive UX</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="contact section-bg">
+        <div class="contact-content">
+            <h2 class="section-title">Co-create The Future</h2>
+            <p>This platform thrives on collaboration. Whether you want to contribute to existing experiments, propose new features, or explore how we can build something revolutionary together—I'm ready to evolve.</p>
+            <p><strong>Your actions shape this platform.</strong> Every interaction you make helps determine what features develop next.</p>
+            <div class="contact-links">
+                <a href="mailto:hello@alex.dev" class="contact-link">
+                    <i class="fas fa-envelope"></i>
+                    <span>hello@alex.dev</span>
+                </a>
+                <a href="https://github.com" class="contact-link">
+                    <i class="fab fa-github"></i>
+                    <span>Contribute Code</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Developer Documentation Section -->
+    <section id="development" class="development section-bg">
+        <div class="about-content">
+            <h2 class="section-title">Backend Development Specs</h2>
+            <p>This section contains all the technical specifications, API contracts, and database schemas you need to implement the backend for this living platform.</p>
+            
+            <div class="dev-docs">
+                <div class="docs-title">
+                    <i class="fas fa-plug"></i>
+                    <span>API Endpoints</span>
+                </div>
+                <p>All endpoints should return JSON responses with proper HTTP status codes.</p>
+                
+                <div class="api-endpoints">
+                    <div class="endpoint">
+                        <div class="endpoint-method">POST</div>
+                        <div class="endpoint-url">/api/interactions</div>
+                        <div class="endpoint-desc">Records a user interaction with the platform</div>
+                        <div class="endpoint-params">
+                            <strong>Request Body:</strong><br>
+                            {<br>
+                            &nbsp;&nbsp;"type": "click|hover|scroll|keypress|move",<br>
+                            &nbsp;&nbsp;"coordinates": {"x": number, "y": number},<br>
+                            &nbsp;&nbsp;"sessionId": "string",<br>
+                            &nbsp;&nbsp;"userId": "string (optional)",<br>
+                            &nbsp;&nbsp;"timestamp": "ISO string"<br>
+                            }
+                        </div>
+                        <div class="endpoint-response">
+                            <strong>Response:</strong><br>
+                            {<br>
+                            &nbsp;&nbsp;"success": true,<br>
+                            &nbsp;&nbsp;"interactionId": "string",<br>
+                            &nbsp;&nbsp;"growthLevel": number (0-100)<br>
+                            }
+                        </div>
+                    </div>
+                    
+                    <div class="endpoint">
+                        <div class="endpoint-method">GET</div>
+                        <div class="endpoint-url">/api/platform/state</div>
+                        <div class="endpoint-desc">Returns current platform state and growth metrics</div>
+                        <div class="endpoint-response">
+                            <strong>Response:</strong><br>
+                            {<br>
+                            &nbsp;&nbsp;"version": "1.0.3",<br>
+                            &nbsp;&nbsp;"totalInteractions": number,<br>
+                            &nbsp;&nbsp;"growthLevel": number (0-100),<br>
+                            &nbsp;&nbsp;"lastUpdated": "ISO string",<br>
+                            &nbsp;&nbsp;"activeExperiments": ["array of experiment IDs"]<br>
+                            }
+                        </div>
+                    </div>
+                    
+                    <div class="endpoint">
+                        <div class="endpoint-method">GET</div>
+                        <div class="endpoint-url">/api/platform/changelog</div>
+                        <div class="endpoint-desc">Returns recent platform evolution history</div>
+                        <div class="endpoint-response">
+                            <strong>Response:</strong><br>
+                            {<br>
+                            &nbsp;&nbsp;"changelog": [<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;{<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"id": "string",<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"message": "string",<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"timestamp": "ISO string",<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"triggeredBy": "system|user"<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;}<br>
+                            &nbsp;&nbsp;]<br>
+                            }
+                        </div>
+                    </div>
+                    
+                    <div class="endpoint">
+                        <div class="endpoint-method">POST</div>
+                        <div class="endpoint-url">/api/contributions</div>
+                        <div class="endpoint-desc">Submit user contributions (experiments, art, code)</div>
+                        <div class="endpoint-params">
+                            <strong>Request Body:</strong><br>
+                            {<br>
+                            &nbsp;&nbsp;"type": "experiment|art|code|idea",<br>
+                            &nbsp;&nbsp;"title": "string",<br>
+                            &nbsp;&nbsp;"content": "string",<br>
+                            &nbsp;&nbsp;"userId": "string",<br>
+                            &nbsp;&nbsp;"metadata": "object"<br>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="dev-docs">
+                <div class="docs-title">
+                    <i class="fas fa-database"></i>
+                    <span>Database Schema</span>
+                </div>
+                <p>Recommended: PostgreSQL with the following tables:</p>
+                
+                <div class="database-schema">
+                    <h3>platform_state</h3>
+                    <table class="schema-table">
+                        <thead>
+                            <tr>
+                                <th>Column</th>
+                                <th>Type</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>id</td><td>SERIAL PRIMARY KEY</td><td>Unique identifier</td></tr>
+                            <tr><td>version</td><td>VARCHAR(20)</td><td>Current platform version</td></tr>
+                            <tr><td>total_interactions</td><td>BIGINT</td><td>Total interactions across all users</td></tr>
+                            <tr><td>growth_level</td><td>INTEGER</td><td>Current growth level (0-100)</td></tr>
+                            <tr><td>last_updated</td><td>TIMESTAMP</td><td>When state was last updated</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="database-schema">
+                    <h3>user_interactions</h3>
+                    <table class="schema-table">
+                        <thead>
+                            <tr>
+                                <th>Column</th>
+                                <th>Type</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>id</td><td>UUID PRIMARY KEY</td><td>Unique interaction ID</td></tr>
+                            <tr><td>user_id</td><td>UUID</td><td>Foreign key to users (nullable)</td></tr>
+                            <tr><td>session_id</td><td>VARCHAR(100)</td><td>Anonymous session identifier</td></tr>
+                            <tr><td>interaction_type</td><td>VARCHAR(20)</td><td>Type of interaction</td></tr>
+                            <tr><td>x_coordinate</td><td>INTEGER</td><td>Mouse X position</td></tr>
+                            <tr><td>y_coordinate</td><td>INTEGER</td><td>Mouse Y position</td></tr>
+                            <tr><td>created_at</td><td>TIMESTAMP</td><td>When interaction occurred</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="database-schema">
+                    <h3>users</h3>
+                    <table class="schema-table">
+                        <thead>
+                            <tr>
+                                <th>Column</th>
+                                <th>Type</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>id</td><td>UUID PRIMARY KEY</td><td>Unique user ID</td></tr>
+                            <tr><td>email</td><td>VARCHAR(255)</td><td>User email (unique)</td></tr>
+                            <tr><td>display_name</td><td>VARCHAR(100)</td><td>Public display name</td></tr>
+                            <tr><td>total_contributions</td><td>INTEGER</td><td>Number of contributions</td></tr>
+                            <tr><td>created_at</td><td>TIMESTAMP</td><td>Account creation date</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="dev-docs">
+                <div class="docs-title">
+                    <i class="fas fa-cogs"></i>
+                    <span>Implementation Notes</span>
+                </div>
+                <ul style="color: #94a3b8; margin-top: 1rem; line-height: 1.8;">
+                    <li><strong>Session Management:</strong> Use localStorage to store anonymous session_id. When user logs in, associate session interactions with user account.</li>
+                    <li><strong>Rate Limiting:</strong> Implement rate limiting on /api/interactions to prevent abuse (max 100 interactions per minute per session).</li>
+                    <li><strong>Caching:</strong> Cache /api/platform/state responses for 5 seconds to reduce database load.</li>
+                    <li><strong>WebSocket Integration:</strong> For real-time updates, implement WebSocket endpoint that broadcasts growth level changes to all connected clients.</li>
+                    <li><strong>Error Handling:</strong> Return proper HTTP status codes (400 for bad requests, 429 for rate limiting, 500 for server errors).</li>
+                    <li><strong>Security:</strong> Validate all input, use parameterized queries to prevent SQL injection, implement CORS properly.</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>Version 1.0.3 – Always Evolving. Thanks for being part of the journey.</p>
+    </footer>
+
+    <script src="livingPlatform.js"></script>
+    <script src="customCursor.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>
