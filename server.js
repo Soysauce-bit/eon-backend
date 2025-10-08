@@ -47,8 +47,10 @@ app.post('/api/interactions', async (req, res) => {
   try { 
     const { type, coordinates, sessionId, timestamp } = req.body; 
     
+    console.log('Recording interaction:', { type, sessionId }); 
+    
     // Record interaction 
-    const { data: interaction, error } = await supabase 
+    const { data: interaction, error: interactionError } = await supabase 
       .from('user_interactions') 
       .insert([ 
         { 
@@ -59,22 +61,39 @@ app.post('/api/interactions', async (req, res) => {
           created_at: timestamp || new Date().toISOString() 
         } 
       ]) 
-      .select() 
-      .single(); 
+      .select(); 
  
-    if (error) throw error; 
+    if (interactionError) { 
+      console.error('Interaction insert error:', interactionError); 
+      throw interactionError; 
+    } 
  
-    // Update platform growth level 
-    const { data: platformState } = await supabase 
+    // Get current platform state - FIXED QUERY 
+    const { data: platformState, error: stateError } = await supabase 
       .from('platform_state') 
       .select('total_interactions, growth_level') 
-      .eq('id', 1)  // ← ADD THIS 
-      .single(); 
+      .eq('id', 1); 
  
-    const newTotalInteractions = (platformState.total_interactions || 0) + 1; 
+    if (stateError) { 
+      console.error('Platform state fetch error:', stateError); 
+      throw stateError; 
+    } 
+ 
+    if (!platformState || platformState.length === 0) { 
+      throw new Error('Platform state not found'); 
+    } 
+ 
+    const currentState = platformState[0]; 
+    const newTotalInteractions = (currentState.total_interactions || 0) + 1; 
     const newGrowthLevel = Math.min(100, Math.floor((newTotalInteractions / 1000) * 100)); 
  
-    // Update platform state - FIXED WITH WHERE CLAUSE 
+    console.log('Updating growth:', { 
+      current: currentState.growth_level, 
+      new: newGrowthLevel, 
+      interactions: newTotalInteractions 
+    }); 
+ 
+    // Update platform state - FIXED QUERY 
     const { data: updatedState, error: updateError } = await supabase 
       .from('platform_state') 
       .update({ 
@@ -82,15 +101,17 @@ app.post('/api/interactions', async (req, res) => {
         growth_level: newGrowthLevel, 
         last_updated: new Date().toISOString() 
       }) 
-      .eq('id', 1)  // ← THIS FIXES THE ERROR 
-      .select() 
-      .single(); 
+      .eq('id', 1) 
+      .select(); 
  
-    if (updateError) throw updateError; 
+    if (updateError) { 
+      console.error('Platform state update error:', updateError); 
+      throw updateError; 
+    } 
  
     res.json({ 
       success: true, 
-      interactionId: interaction.id, 
+      interactionId: interaction[0].id, 
       growthLevel: newGrowthLevel, 
       totalInteractions: newTotalInteractions 
     }); 
@@ -99,7 +120,7 @@ app.post('/api/interactions', async (req, res) => {
     console.error('Error recording interaction:', error); 
     res.status(500).json({ 
       success: false, 
-      error: 'Failed to record interaction' 
+      error: error.message 
     }); 
   } 
 });
