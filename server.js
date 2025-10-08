@@ -73,40 +73,22 @@ app.post('/api/interactions', async (req, res) => {
 
     if (interactionError) throw interactionError;
 
-    // 2. Get current state and update in one transaction-like operation
-    const { data: currentState, error: readError } = await supabase
-      .from('platform_state')
-      .select('total_interactions, growth_level')
-      .eq('id', 1)
-      .single();
+    // 2. ATOMIC UPDATE: Increment total_interactions and calculate growth in one operation
+    const { data: updatedState, error: updateError } = await supabase
+      .rpc('increment_interactions_and_growth');
 
-    if (readError) throw readError;
+    if (updateError) {
+      console.error('Atomic update error:', updateError);
+      throw updateError;
+    }
 
-    // 3. Calculate new values
-    const newTotalInteractions = (currentState.total_interactions || 0) + 1;
-    const newGrowthLevel = Math.min(100, Math.floor((newTotalInteractions / 10) * 100)); // Faster growth for testing
-
-    console.log('Updating from:', currentState, 'to:', { newTotalInteractions, newGrowthLevel });
-
-    // 4. Update platform state
-    const { error: updateError } = await supabase
-      .from('platform_state')
-      .update({
-        total_interactions: newTotalInteractions,
-        growth_level: newGrowthLevel,
-        last_updated: new Date().toISOString()
-      })
-      .eq('id', 1);
-
-    if (updateError) throw updateError;
-
-    console.log('✅ Update successful! New state:', { newTotalInteractions, newGrowthLevel });
+    console.log('✅ Atomic update successful! New state:', updatedState);
 
     res.json({
       success: true,
       interactionId: interaction[0].id,
-      growthLevel: newGrowthLevel,
-      totalInteractions: newTotalInteractions
+      growthLevel: updatedState.growth_level,
+      totalInteractions: updatedState.total_interactions
     });
 
   } catch (error) {
