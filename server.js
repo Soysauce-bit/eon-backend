@@ -17,13 +17,17 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 
 // Initialize platform state
 async function initializePlatform() {
-  const { data, error } = await supabase
+  const { data, error: selectError } = await supabase
     .from('platform_state')
     .select('*')
     .single();
    
+  if (selectError && selectError.code !== 'PGRST116') {
+    console.error('Error selecting platform state during initialization:', selectError);
+  }
+
   if (!data) {
-    const { data: newState, error } = await supabase
+    const { data: newState, error: insertError } = await supabase
       .from('platform_state')
       .insert([
         {
@@ -36,7 +40,11 @@ async function initializePlatform() {
       .select()
       .single();
      
-    console.log('Platform state initialized:', newState);
+    if (insertError) {
+      console.error('Error inserting initial platform state:', insertError);
+    } else {
+      console.log('Platform state initialized:', newState);
+    }
   }
 }
 
