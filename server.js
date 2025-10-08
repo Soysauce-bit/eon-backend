@@ -81,9 +81,13 @@ app.post('/api/interactions', async (req, res) => {
     if (countError) throw countError;
 
     // 3. Calculate growth level 
-    const growthLevel = Math.min(100, Math.floor((totalInteractions / 10) * 100));
+    const growthLevel = Math.min(100, Math.floor(Math.sqrt(totalInteractions) * 3));
 
-    console.log('📊 Growth calculation:', { totalInteractions, growthLevel });
+    console.log('📊 Growth calculation:', {
+      totalInteractions,
+      growthLevel,
+      progress: `${Math.floor((totalInteractions / 1111) * 100)}% to next level` // 1111 interactions for 100% 
+    });
 
     // 4. DEBUG: Check current platform_state before update 
     const { data: currentState, error: readError } = await supabase
