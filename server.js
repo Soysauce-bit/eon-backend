@@ -87,27 +87,35 @@ app.post('/api/interactions', async (req, res) => {
     const newTotalInteractions = (currentState.total_interactions || 0) + 1; 
 const newGrowthLevel = Math.min(100, Math.floor((newTotalInteractions / 50) * 100)); // Changed from 1000 to 50 for faster growth 
  
-    console.log('Updating growth:', { 
-      current: currentState.growth_level, 
-      new: newGrowthLevel, 
-      interactions: newTotalInteractions 
-    }); 
+ // Update platform state - FIXED WITH VERIFICATION 
+ console.log('Updating platform state:', { newTotalInteractions, newGrowthLevel }); 
  
-    // Update platform state - FIXED QUERY 
-    const { data: updatedState, error: updateError } = await supabase 
-      .from('platform_state') 
-      .update({ 
-        total_interactions: newTotalInteractions, 
-        growth_level: newGrowthLevel, 
-        last_updated: new Date().toISOString() 
-      }) 
-      .eq('id', 1) 
-      .select(); 
+ const { data: updatedState, error: updateError } = await supabase 
+   .from('platform_state') 
+   .update({ 
+     total_interactions: newTotalInteractions, 
+     growth_level: newGrowthLevel, 
+     last_updated: new Date().toISOString() 
+   }) 
+   .eq('id', 1) 
+   .select(); 
  
-    if (updateError) { 
-      console.error('Platform state update error:', updateError); 
-      throw updateError; 
-    } 
+ if (updateError) { 
+   console.error('UPDATE ERROR:', updateError); 
+   throw updateError; 
+ } 
+ 
+ console.log('Update successful:', updatedState); 
+ 
+ res.json({ 
+   success: true, 
+   interactionId: interaction[0].id, 
+   growthLevel: newGrowthLevel, 
+   totalInteractions: newTotalInteractions 
+ }); 
+  .single(); 
+
+console.log('After update verification:', verifyState); // ← ADD THIS 
  
     res.json({ 
       success: true, 
