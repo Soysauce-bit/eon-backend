@@ -113,7 +113,6 @@ const newGrowthLevel = Math.min(100, Math.floor((newTotalInteractions / 50) * 10
    growthLevel: newGrowthLevel, 
    totalInteractions: newTotalInteractions 
  }); 
-  .single(); 
 
 console.log('After update verification:', verifyState); // ← ADD THIS 
  
