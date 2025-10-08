@@ -2,7 +2,7 @@ class LivingPlatform {
     constructor() {
         this.interactionCount = 0;
         this.growthLevel = 0;
-        this.maxInteractions = 50;
+        this.maxInteractions = 15; // Keep for fallback only 
         this.changes = [
             { time: new Date(), message: "Platform initialized – v1.0.0" },
             { time: new Date(), message: "Interactive canvas system activated" },
@@ -17,6 +17,7 @@ class LivingPlatform {
         this.setupCanvas();
         this.setupEventListeners();
         this.updateGrowthDisplay();
+        this.syncGrowthLevel(); // Add this line 
     }
     
     // Generate or retrieve session ID
@@ -27,6 +28,19 @@ class LivingPlatform {
             localStorage.setItem('living_platform_session', sessionId);
         }
         return sessionId;
+    }
+    
+    async syncGrowthLevel() { 
+        try { 
+            const response = await fetch('https://eon-tqp0.onrender.com/api/platform/state'); 
+            if (response.ok) { 
+                const data = await response.json(); 
+                this.growthLevel = data.growthLevel; 
+                this.updateGrowthDisplay(); 
+            } 
+        } catch (error) { 
+            console.log('Could not sync growth level on startup'); 
+        } 
     }
     
     setupCanvas() {
@@ -67,40 +81,39 @@ class LivingPlatform {
             this.createInteractionParticle(x, y, type);
         }
         
-        // Update growth level
-        const newGrowthLevel = Math.min(100, Math.floor((this.interactionCount / this.maxInteractions) * 100));
-        if (newGrowthLevel > this.growthLevel) {
-            this.growthLevel = newGrowthLevel;
-            this.updateGrowthDisplay();
-            this.triggerGrowthEvent();
-        }
-        
-        // Send to backend (uncomment when backend is ready)
-        try {
-            const response = await fetch('https://eon-tqp0.onrender.com/api/interactions', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    type: type,
-                    coordinates: { x: x, y: y },
-                    sessionId: this.sessionId,
-                    timestamp: new Date().toISOString()
-                })
-            });
-            
-            if (response.ok) {
-                const data = await response.json();
-                // Update growth level from server if different
-                if (data.growthLevel !== this.growthLevel) {
-                    this.growthLevel = data.growthLevel;
-                    this.updateGrowthDisplay();
-                }
-            }
-        } catch (error) {
-            console.log('Backend offline, continuing with local tracking');
-            // Continue with local tracking if backend fails
+        // Send to backend and use its growth level 
+        try { 
+            const response = await fetch('https://eon-tqp0.onrender.com/api/interactions', { 
+                method: 'POST', 
+                headers: { 
+                    'Content-Type': 'application/json', 
+                }, 
+                body: JSON.stringify({ 
+                    type: type, 
+                    coordinates: { x: x, y: y }, 
+                    sessionId: this.sessionId, 
+                    timestamp: new Date().toISOString() 
+                }) 
+            }); 
+             
+            if (response.ok) { 
+                const data = await response.json(); 
+                // Use the growth level from backend 
+                if (data.growthLevel !== this.growthLevel) { 
+                    this.growthLevel = data.growthLevel; 
+                    this.updateGrowthDisplay(); 
+                    this.triggerGrowthEvent(); 
+                } 
+            } 
+        } catch (error) { 
+            console.log('Backend offline, continuing with local tracking'); 
+            // Fallback: use local calculation if backend fails 
+            const newGrowthLevel = Math.min(100, Math.floor((this.interactionCount / 15) * 100)); 
+            if (newGrowthLevel > this.growthLevel) { 
+                this.growthLevel = newGrowthLevel; 
+                this.updateGrowthDisplay(); 
+                this.triggerGrowthEvent(); 
+            } 
         }
         
         console.log(`Interaction ${this.interactionCount}: ${type} at (${x}, ${y})`);
