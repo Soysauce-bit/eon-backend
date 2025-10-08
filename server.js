@@ -82,24 +82,38 @@ app.post('/api/interactions', async (req, res) => {
     const newTotalInteractions = (platformState.total_interactions || 0) + 1; 
     const newGrowthLevel = Math.min(100, Math.floor((newTotalInteractions / 1000) * 100)); 
  
-    // Update platform state - FIXED WITH WHERE CLAUSE 
-    const { data: updatedState, error: updateError } = await supabase 
-      .from('platform_state') 
-      .update({ 
-        total_interactions: newTotalInteractions, 
-        growth_level: newGrowthLevel, 
-        last_updated: new Date().toISOString() 
-      }) 
-      .eq('id', 1)  // ← THIS FIXES THE ERROR 
-      .select() 
-      .single(); 
- 
+    // Update platform state - FIXED (remove .select().single())
+    console.log('Updating platform state:', { newTotalInteractions, newGrowthLevel });
+
+    const { error: updateError } = await supabase
+      .from('platform_state')
+      .update({
+        total_interactions: newTotalInteractions,
+        growth_level: newGrowthLevel,
+        last_updated: new Date().toISOString()
+      })
+      .eq('id', 1);
+
     if (updateError) {
-      console.error('Error updating platform state:', updateError);
-      return res.status(500).json({ success: false, error: 'Failed to update platform state' });
+      console.error('UPDATE ERROR:', updateError);
+      throw updateError;
     }
 
-    console.log('Update successful:', updatedState);
+    console.log('Update successful - no rows returned (this is normal)');
+
+    // Verify the update worked by reading the updated state
+    const { data: verifyState, error: verifyError } = await supabase
+      .from('platform_state')
+      .select('total_interactions, growth_level')
+      .eq('id', 1)
+      .single();
+
+    if (verifyError) {
+      console.error('Verification error:', verifyError);
+      throw verifyError;
+    }
+
+    console.log('Update verified:', verifyState);
 
     res.json({ 
       success: true, 
