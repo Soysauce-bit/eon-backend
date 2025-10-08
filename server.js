@@ -51,40 +51,44 @@ async function initializePlatform() {
 // API Endpoints
 
 // POST /api/interactions
-app.post('/api/interactions', async (req, res) => { 
-  try { 
-    const { type, coordinates, sessionId, timestamp } = req.body; 
+app.post('/api/interactions', async (req, res) => {
+  try {
+    const { type, coordinates, sessionId, timestamp } = req.body;
     
-    // Record interaction 
-    const { data: interaction, error } = await supabase 
-      .from('user_interactions') 
-      .insert([ 
-        { 
-          interaction_type: type, 
-          x_coordinate: coordinates.x, 
-          y_coordinate: coordinates.y, 
-          session_id: sessionId, 
-          created_at: timestamp || new Date().toISOString() 
-        } 
-      ]) 
-      .select() 
-      .single(); 
- 
-    if (error) throw error; 
- 
-    // Update platform growth level 
-    const { data: platformState } = await supabase 
-      .from('platform_state') 
-      .select('total_interactions, growth_level') 
-      .eq('id', 1)  // ← ADD THIS 
-      .single(); 
- 
-    const newTotalInteractions = (platformState.total_interactions || 0) + 1; 
-    const newGrowthLevel = Math.min(100, Math.floor((newTotalInteractions / 1000) * 100)); 
- 
-    // Update platform state - FIXED (remove .select().single())
-    console.log('Updating platform state:', { newTotalInteractions, newGrowthLevel });
+    console.log('Recording interaction:', { type, sessionId });
+    
+    // 1. Record interaction first
+    const { data: interaction, error: interactionError } = await supabase
+      .from('user_interactions')
+      .insert([
+        {
+          interaction_type: type,
+          x_coordinate: coordinates.x,
+          y_coordinate: coordinates.y,
+          session_id: sessionId,
+          created_at: timestamp || new Date().toISOString()
+        }
+      ])
+      .select();
 
+    if (interactionError) throw interactionError;
+
+    // 2. Get current state and update in one transaction-like operation
+    const { data: currentState, error: readError } = await supabase
+      .from('platform_state')
+      .select('total_interactions, growth_level')
+      .eq('id', 1)
+      .single();
+
+    if (readError) throw readError;
+
+    // 3. Calculate new values
+    const newTotalInteractions = (currentState.total_interactions || 0) + 1;
+    const newGrowthLevel = Math.min(100, Math.floor((newTotalInteractions / 10) * 100)); // Faster growth for testing
+
+    console.log('Updating from:', currentState, 'to:', { newTotalInteractions, newGrowthLevel });
+
+    // 4. Update platform state
     const { error: updateError } = await supabase
       .from('platform_state')
       .update({
@@ -94,41 +98,24 @@ app.post('/api/interactions', async (req, res) => {
       })
       .eq('id', 1);
 
-    if (updateError) {
-      console.error('UPDATE ERROR:', updateError);
-      throw updateError;
-    }
+    if (updateError) throw updateError;
 
-    console.log('Update successful - no rows returned (this is normal)');
+    console.log('✅ Update successful! New state:', { newTotalInteractions, newGrowthLevel });
 
-    // Verify the update worked by reading the updated state
-    const { data: verifyState, error: verifyError } = await supabase
-      .from('platform_state')
-      .select('total_interactions, growth_level')
-      .eq('id', 1)
-      .single();
+    res.json({
+      success: true,
+      interactionId: interaction[0].id,
+      growthLevel: newGrowthLevel,
+      totalInteractions: newTotalInteractions
+    });
 
-    if (verifyError) {
-      console.error('Verification error:', verifyError);
-      throw verifyError;
-    }
-
-    console.log('Update verified:', verifyState);
-
-    res.json({ 
-      success: true, 
-      interactionId: interaction.id, 
-      growthLevel: newGrowthLevel, 
-      totalInteractions: newTotalInteractions 
-    }); 
- 
-  } catch (error) { 
-    console.error('Error recording interaction:', error); 
-    res.status(500).json({ 
-      success: false, 
-      error: 'Failed to record interaction' 
-    }); 
-  } 
+  } catch (error) {
+    console.error('Error recording interaction:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
 });
 
 // GET /api/platform/state
