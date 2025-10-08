@@ -81,7 +81,7 @@ app.post('/api/interactions', async (req, res) => {
     if (countError) throw countError;
 
     // 3. Calculate growth level 
-    const growthLevel = Math.min(100, Math.floor(Math.sqrt(totalInteractions) * 3));
+    const growthLevel = Math.min(100, Math.floor(Math.sqrt(totalInteractions) * 0.5));
 
     console.log('📊 Growth calculation:', {
       totalInteractions,
