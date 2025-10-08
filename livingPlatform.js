@@ -76,9 +76,8 @@ class LivingPlatform {
         }
         
         // Send to backend (uncomment when backend is ready)
-        /*
         try {
-            const response = await fetch('/api/interactions', {
+            const response = await fetch('https://eon-tqp0.onrender.com/api/interactions', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -93,6 +92,7 @@ class LivingPlatform {
             
             if (response.ok) {
                 const data = await response.json();
+                console.log('Backend response:', data); // ← ADD THIS LINE 
                 // Update growth level from server if different
                 if (data.growthLevel !== this.growthLevel) {
                     this.growthLevel = data.growthLevel;
@@ -100,10 +100,9 @@ class LivingPlatform {
                 }
             }
         } catch (error) {
-            console.error('Failed to record interaction:', error);
+            console.log('Backend offline, continuing with local tracking');
             // Continue with local tracking if backend fails
         }
-        */
         
         console.log(`Interaction ${this.interactionCount}: ${type} at (${x}, ${y})`);
     }
