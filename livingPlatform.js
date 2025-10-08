@@ -68,6 +68,7 @@ class LivingPlatform {
         }
         
         // Send to backend (uncomment when backend is ready)
+        console.log('Attempting to send interaction to backend...');
         try {
             const response = await fetch('https://eon-tqp0.onrender.com/api/interactions', {
                 method: 'POST',
@@ -92,6 +93,7 @@ class LivingPlatform {
                 }
             }
         } catch (error) {
+            console.error('Error sending interaction to backend:', error);
             console.log('Backend offline, continuing with local tracking');
             // Continue with local tracking if backend fails
         }
