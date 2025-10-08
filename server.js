@@ -73,22 +73,40 @@ app.post('/api/interactions', async (req, res) => {
 
     if (interactionError) throw interactionError;
 
-    // 2. ATOMIC UPDATE: Increment total_interactions and calculate growth in one operation
-    const { data: updatedState, error: updateError } = await supabase
-      .rpc('increment_interactions_and_growth');
+    // 2. Count ALL interactions from the database (this is accurate)
+    const { count: totalInteractions, error: countError } = await supabase
+      .from('user_interactions')
+      .select('*', { count: 'exact', head: true });
 
-    if (updateError) {
-      console.error('Atomic update error:', updateError);
-      throw updateError;
-    }
+    if (countError) throw countError;
 
-    console.log('✅ Atomic update successful! New state:', updatedState);
+    // 3. Calculate growth level (10% per interaction for fast testing)
+    const growthLevel = Math.min(100, Math.floor((totalInteractions / 10) * 100));
+
+    console.log('📊 Growth calculation:', {
+      totalInteractions,
+      growthLevel
+    });
+
+    // 4. Update platform state with the accurate count
+    const { error: updateError } = await supabase
+      .from('platform_state')
+      .update({
+        total_interactions: totalInteractions,
+        growth_level: growthLevel,
+        last_updated: new Date().toISOString()
+      })
+      .eq('id', 1);
+
+    if (updateError) throw updateError;
+
+    console.log('✅ Growth updated successfully!');
 
     res.json({
       success: true,
       interactionId: interaction[0].id,
-      growthLevel: updatedState.growth_level,
-      totalInteractions: updatedState.total_interactions
+      growthLevel: growthLevel,
+      totalInteractions: totalInteractions
     });
 
   } catch (error) {
