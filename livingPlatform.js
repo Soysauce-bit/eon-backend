@@ -67,8 +67,15 @@ class LivingPlatform {
             this.createInteractionParticle(x, y, type);
         }
         
+        // Update growth level
+        const newGrowthLevel = Math.min(100, Math.floor((this.interactionCount / this.maxInteractions) * 100));
+        if (newGrowthLevel > this.growthLevel) {
+            this.growthLevel = newGrowthLevel;
+            this.updateGrowthDisplay();
+            this.triggerGrowthEvent();
+        }
+        
         // Send to backend (uncomment when backend is ready)
-        console.log('Attempting to send interaction to backend...');
         try {
             const response = await fetch('https://eon-tqp0.onrender.com/api/interactions', {
                 method: 'POST',
@@ -85,7 +92,6 @@ class LivingPlatform {
             
             if (response.ok) {
                 const data = await response.json();
-                console.log('Backend response:', data); // ← ADD THIS LINE 
                 // Update growth level from server if different
                 if (data.growthLevel !== this.growthLevel) {
                     this.growthLevel = data.growthLevel;
@@ -93,7 +99,6 @@ class LivingPlatform {
                 }
             }
         } catch (error) {
-            console.error('Error sending interaction to backend:', error);
             console.log('Backend offline, continuing with local tracking');
             // Continue with local tracking if backend fails
         }
